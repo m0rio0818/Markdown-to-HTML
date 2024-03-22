@@ -16,10 +16,10 @@
         </div>
         <div class="w-full lg:w-1/2 h-1/2 md:h-3/4 lg:h-full overflow-scroll" style="border:1px solid grey">
             <div class="p-3 flex items-center justify-center sticky top-0 bg-white">
-                <button id="preview" class="bg-transparent mx-1 hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded">
+                <button id="preview" value="on" class="bg-transparent mx-1 hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded">
                     Preview
                 </button>
-                <button id="html" class="bg-transparent mx-1 hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded">
+                <button id="html" value="off" class="bg-transparent mx-1 hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded">
                     HTML
                 </button>
                 <button id="highlight" value="on" class="bg-transparent mx-1 font-semibold py-1 px-2 border hover:bg-blue-500 text-blue-700  hover:text-white  border-blue-500 hover:border-transparent rounded">

@@ -85,37 +85,67 @@ require(['vs/editor/editor.main'], function () {
     window.addEventListener("load", () => {
         let value = editor.getValue();
         let highlight = document.getElementById("highlight").value;
-        updateRender(value, highlight)
+        updateRender(value, highlight, "preview")
     })
-
 
     update_Higlight(editor);
     update_HTML(editor);
     update_Preview(editor);
 
     editor.onDidChangeModelContent(() => {
+        let htmlButton = document.getElementById("html");
         let highlight = document.getElementById("highlight").value;
         let value = editor.getValue();
-        updateRender(value, highlight)
+        let type = htmlButton.value == "on" ? "html" : "preview";
+        updateRender(value, highlight, type);
     });
 });
 
 
+function togglePreviewHTML() {
+    let htmlButton = document.getElementById("html");
+    let preview_button = document.getElementById("preview");
+    if (htmlButton.value == "on") {
+        // htmlButton.value == "on"
+        // preview_button.value = "off"
+        htmlButton.value = "off"
+        preview_button.value = "on"
+    } else {
+        // htmlButton.value == "off"
+        // preview_button.value = "on"
+        htmlButton.value = "on"
+        preview_button.value = "off"
+    }
+}
+
+
 function update_HTML(editor) {
     let htmlButton = document.getElementById("html");
+    let preview_button = document.getElementById("preview");
     htmlButton.addEventListener("click", () => {
         let highlight = document.getElementById("highlight").value;
         let value = editor.getValue();
-        updateRender(value, highlight, "html");
+
+        if (htmlButton.value == "off"){
+            togglePreviewHTML()
+            let type = htmlButton.value == "on" ? "html" : "preview";
+            updateRender(value, highlight, type);
+        }
     })
 }
 
 function update_Preview(editor) {
+    let htmlButton = document.getElementById("html");
     let preview_button = document.getElementById("preview");
     preview_button.addEventListener("click", () => {
         let highlight = document.getElementById("highlight").value;
         let value = editor.getValue();
-        updateRender(value, highlight);
+        
+        if (preview_button.value == "off"){
+            togglePreviewHTML()
+            let type = preview_button.value == "on" ? "preview" : "preview";
+            updateRender(value, highlight, type);
+        }
     })
 }
 
@@ -138,11 +168,12 @@ function update_Higlight(editor) {
         console.log("highlightを変更")
         let highlights = document.getElementById("highlight").value;
         let value = editor.getValue();
-        updateRender(value, highlights)
+        let type = htmlButton.value == "on" ? "html" : "preview";
+        updateRender(value, highlights, type)
     })
 }
 
-function updateRender(value, highlight, type = "preview") {
+function updateRender(value, highlight, type) {
     const requet = new Request("../convert.php", {
         method: "POST",
         headers: {

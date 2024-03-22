@@ -19,10 +19,10 @@ class FileConverter:
             convert_param = FileConverter.inputCommand[1]
             highlight = FileConverter.inputCommand[2]
             if (highlight == "on"):
-                htmlData = markdown.markdown(convert_param, extensions=['markdown.extensions.tables', "sane_lists", "toc", 'fenced_code', 'codehilite',], extension_configs=config)
+                htmlData = markdown.markdown(convert_param, extensions=['markdown.extensions.tables', "sane_lists",  'fenced_code', 'codehilite',], extension_configs=config)
                 print(htmlData)
             else:
-                htmlData = markdown.markdown(convert_param, extensions=['markdown.extensions.tables', "sane_lists", "toc"])
+                htmlData = markdown.markdown(convert_param, extensions=['markdown.extensions.tables', "sane_lists",])
                 print(htmlData)
             
             # return htmlData
