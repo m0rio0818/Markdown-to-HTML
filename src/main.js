@@ -78,7 +78,6 @@ require(['vs/editor/editor.main'], function () {
             'scope_test()\n' +
             'print("In global scope:", spam)\n' +
             '```\n',
-        // ,
         language: 'markdown'
     });
 
@@ -91,6 +90,7 @@ require(['vs/editor/editor.main'], function () {
     update_Higlight(editor);
     update_HTML(editor);
     update_Preview(editor);
+    update_download(editor);
 
     editor.onDidChangeModelContent(() => {
         let htmlButton = document.getElementById("html");
@@ -121,12 +121,11 @@ function togglePreviewHTML() {
 
 function update_HTML(editor) {
     let htmlButton = document.getElementById("html");
-    let preview_button = document.getElementById("preview");
     htmlButton.addEventListener("click", () => {
         let highlight = document.getElementById("highlight").value;
         let value = editor.getValue();
 
-        if (htmlButton.value == "off"){
+        if (htmlButton.value == "off") {
             togglePreviewHTML()
             let type = htmlButton.value == "on" ? "html" : "preview";
             updateRender(value, highlight, type);
@@ -135,13 +134,12 @@ function update_HTML(editor) {
 }
 
 function update_Preview(editor) {
-    let htmlButton = document.getElementById("html");
     let preview_button = document.getElementById("preview");
     preview_button.addEventListener("click", () => {
         let highlight = document.getElementById("highlight").value;
         let value = editor.getValue();
-        
-        if (preview_button.value == "off"){
+
+        if (preview_button.value == "off") {
             togglePreviewHTML()
             let type = preview_button.value == "on" ? "preview" : "preview";
             updateRender(value, highlight, type);
@@ -152,6 +150,7 @@ function update_Preview(editor) {
 
 function update_Higlight(editor) {
     let highlight = document.getElementById("highlight");
+    let htmlButton = document.getElementById("html");
     highlight.addEventListener("click", (e) => {
         if (e.target.value == "on") {
             highlight.classList.remove("hover:bg-blue-500", "text-blue-700", "hover:text-white", "border-blue-500")
@@ -173,6 +172,41 @@ function update_Higlight(editor) {
     })
 }
 
+
+function update_download(editor) {
+
+    download.addEventListener("click", () => {
+        console.log("ファイルをダウンロードします")
+        let highlights = document.getElementById("highlight").value;
+        let value = editor.getValue();
+        let htmlButton = document.getElementById("html");
+        let type = htmlButton.value == "on" ? "html" : "preview";
+        updateRender(value, highlights, type);
+        // ダウンロードするコンテンツ
+        let element = document.getElementById("converted-ele");
+        let data;
+        if (type == "preview") {
+            data = element.innerHTML;
+        }
+        else {
+            data = element.innerText;
+        }
+        console.log("ダウンロードするコンテンツ => ",data);
+        let blob = new Blob([data], { "type": "text/html" })
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "converted.html";
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    })
+
+}
+
+
 function updateRender(value, highlight, type) {
     const requet = new Request("../convert.php", {
         method: "POST",
@@ -191,7 +225,6 @@ function updateRender(value, highlight, type) {
         })
         .then(data => {
             let converted_ele = document.getElementById("converted-ele");
-            console.log(data);
             if (type == "preview") {
                 converted_ele.innerText = "";
                 converted_ele.innerHTML = data;
