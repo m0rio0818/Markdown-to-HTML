@@ -82,22 +82,48 @@ require(['vs/editor/editor.main'], function () {
         language: 'markdown'
     });
 
-    editor.onDidChangeModelContent((event) => {
-        console.log("テキストが変更されました。");
+    window.addEventListener("load", () => {
         let value = editor.getValue();
-        updateRender(value)
+        let highlight = document.getElementById("highlight").value;
+        updateRender(value, highlight)
+    })
+
+
+    let highlight = document.getElementById("highlight");
+    highlight.addEventListener("click", (e) => {
+        if (e.target.value == "on") {
+            highlight.classList.remove("hover:bg-blue-500", "text-blue-700", "hover:text-white", "border-blue-500")
+            highlight.classList.add("bg-blue-500", "text-white", "hover:text-blue-500", "hover:bg-white", "hover:border-blue-500")
+            e.target.value = "off";
+            highlight.innerHTML = "Highlight : OFF";
+        }
+        else {
+            highlight.classList.remove("bg-blue-500", "text-white", "hover:text-blue-500", "hover:bg-white", "hover:border-blue-500")
+            highlight.classList.add("hover:bg-blue-500", "text-blue-700", "hover:text-white", "border-blue-500")
+            e.target.value = "on";
+            highlight.innerHTML = "Highlight : ON";
+        }
+        console.log("highlightを変更")
+        let highlights = document.getElementById("highlight").value;
+        let value = editor.getValue();
+        updateRender(value, highlights)
+    })
+
+    editor.onDidChangeModelContent(() => {
+        let highlight = document.getElementById("highlight").value;
+        let value = editor.getValue();
+        updateRender(value, highlight)
     });
 });
 
 
-function updateRender(value) {
+function updateRender(value, highlight) {
     const requet = new Request("../convert.php", {
         method: "POST",
         headers: {
-            "Content-Type": "text/plain",
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "markdown=" + value,
+        body: "markdown=" + value + "&highlight=" + highlight,
     })
 
     fetch(requet)
@@ -110,7 +136,6 @@ function updateRender(value) {
         .then(data => {
             console.log(data);
             document.getElementById("converted-ele").innerHTML = data;
-            // console.log(document.getElementById("converted-ele").innerHTML = data)
         })
         .catch(error => {
             console.error("There was a problem with the fetch operation:", error);
@@ -118,16 +143,3 @@ function updateRender(value) {
 }
 
 
-
-let highlight = document.getElementById("highlight");
-highlight.addEventListener("click", (e) => {
-    if (e.target.value == "on") {
-        e.target.value = "off";
-        highlight.innerHTML = "Highlight : OFF";
-        // highlight.classList.remove("")
-    }
-    else {
-        e.target.value = "on";
-        highlight.innerHTML = "Highlight : ON";
-    }
-})

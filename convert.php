@@ -3,11 +3,12 @@ $output = [];
 
 if (isset($_POST["markdown"])) {
     $markdownText = $_POST["markdown"];
-    $cmd = "python3 ./converter/file-converter.py " . escapeshellarg($markdownText);
-
+    $hightLight = $_POST["highlight"];
     $request_body = file_get_contents('php://input');
-    exec($cmd, $output);
+    $cmd = "python3 ./converter/file-converter.py " . escapeshellarg($markdownText) . " " .  $hightLight;
 
+    exec($cmd, $output);
+    
     $html = implode("\n", $output);
     echo $html;
 } else {

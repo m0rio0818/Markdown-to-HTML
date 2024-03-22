@@ -4,17 +4,27 @@ import os
 
 
 class FileConverter:
-    md = markdown.Markdown()
-    inputCommand = sys.argv;
+    inputCommand = sys.argv
     @staticmethod
     def convert():
         if (len(FileConverter.inputCommand) <= 1):
             print("need argments")
-        else:
-            # print(FileConverter.inputCommand)
+        else:        
+            config = {
+    'codehilite': {
+        'noclasses': False,  # CSS クラスを有効にする
+    }
+}
+            
             convert_param = FileConverter.inputCommand[1]
-            htmlData = FileConverter.md.convert(convert_param)
-            print(htmlData)
+            highlight = FileConverter.inputCommand[2]
+            if (highlight == "on"):
+                md = markdown.Markdown(extensions=['markdown.extensions.tables', "sane_lists", "toc", 'fenced_code', 'codehilite',], extension_configs=config)
+                print(md.convert(convert_param))
+            else:
+                htmlData = markdown.markdown(convert_param, extensions=['markdown.extensions.tables', "sane_lists", "toc"])
+                print(htmlData)
+            
             # return htmlData
                     
 def main():
