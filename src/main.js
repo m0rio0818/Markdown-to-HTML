@@ -89,6 +89,38 @@ require(['vs/editor/editor.main'], function () {
     })
 
 
+    update_Higlight(editor);
+    update_HTML(editor);
+    update_Preview(editor);
+
+    editor.onDidChangeModelContent(() => {
+        let highlight = document.getElementById("highlight").value;
+        let value = editor.getValue();
+        updateRender(value, highlight)
+    });
+});
+
+
+function update_HTML(editor) {
+    let htmlButton = document.getElementById("html");
+    htmlButton.addEventListener("click", () => {
+        let highlight = document.getElementById("highlight").value;
+        let value = editor.getValue();
+        updateRender(value, highlight, "html");
+    })
+}
+
+function update_Preview(editor) {
+    let preview_button = document.getElementById("preview");
+    preview_button.addEventListener("click", () => {
+        let highlight = document.getElementById("highlight").value;
+        let value = editor.getValue();
+        updateRender(value, highlight);
+    })
+}
+
+
+function update_Higlight(editor) {
     let highlight = document.getElementById("highlight");
     highlight.addEventListener("click", (e) => {
         if (e.target.value == "on") {
@@ -108,22 +140,15 @@ require(['vs/editor/editor.main'], function () {
         let value = editor.getValue();
         updateRender(value, highlights)
     })
+}
 
-    editor.onDidChangeModelContent(() => {
-        let highlight = document.getElementById("highlight").value;
-        let value = editor.getValue();
-        updateRender(value, highlight)
-    });
-});
-
-
-function updateRender(value, highlight) {
+function updateRender(value, highlight, type = "preview") {
     const requet = new Request("../convert.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "markdown=" + value + "&highlight=" + highlight,
+        body: "markdown=" + value + "&highlight=" + highlight + "&type=" + type
     })
 
     fetch(requet)
@@ -134,8 +159,16 @@ function updateRender(value, highlight) {
             return response.text(); // レスポンスをテキスト形式で取得
         })
         .then(data => {
+            let converted_ele = document.getElementById("converted-ele");
             console.log(data);
-            document.getElementById("converted-ele").innerHTML = data;
+            if (type == "preview") {
+                converted_ele.innerText = "";
+                converted_ele.innerHTML = data;
+            }
+            else {
+                converted_ele.innerHTML = "";
+                converted_ele.innerText = data;
+            }
         })
         .catch(error => {
             console.error("There was a problem with the fetch operation:", error);
