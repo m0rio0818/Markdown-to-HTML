@@ -11,16 +11,16 @@ class FileConverter:
             print("need argments")
         else:        
             config = {
-    'codehilite': {
-        'noclasses': False,  # CSS クラスを有効にする
-    }
-}
+                'codehilite': {
+                    'noclasses': True,  # CSS クラスを有効にする
+                }
+            }
             
             convert_param = FileConverter.inputCommand[1]
             highlight = FileConverter.inputCommand[2]
             if (highlight == "on"):
-                md = markdown.Markdown(extensions=['markdown.extensions.tables', "sane_lists", "toc", 'fenced_code', 'codehilite',], extension_configs=config)
-                print(md.convert(convert_param))
+                htmlData = markdown.markdown(convert_param, extensions=['markdown.extensions.tables', "sane_lists", "toc", 'fenced_code', 'codehilite',], extension_configs=config)
+                print(htmlData)
             else:
                 htmlData = markdown.markdown(convert_param, extensions=['markdown.extensions.tables', "sane_lists", "toc"])
                 print(htmlData)
